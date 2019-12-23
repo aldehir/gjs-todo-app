@@ -1,0 +1,6 @@
+#!$GJS
+imports.package.init({ name: "io.alde.examples.TodoApp",
+                       version: "$PACKAGE_VERSION",
+                       prefix: "$PREFIX",
+                       libdir: "$LIBDIR" })
+imports.package.run(imports.main)
