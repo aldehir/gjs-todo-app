@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<interface>
+  <!-- {{{ GtkImage -->
+  <object id="add-item" class="GtkImage">
+    <property name="visible">true</property>
+    <property name="icon-name">list-add-symbolic</property> 
+  </object>
+  <!-- }}} -->
+
+  <template class="Gjs_TodoAddItemView" parent="GtkBox">
+    <property name="visible">true</property>
+    <property name="orientation">horizontal</property>
+    <property name="vexpand">false</property>
+    <property name="halign">fill</property>
+
+    <property name="spacing">6</property>
+
+    <child>
+      <!-- {{{ GtkEntry -->
+      <object id="entry" class="GtkEntry">
+        <property name="visible">true</property>
+        <property name="hexpand">true</property>
+        <property name="valign">center</property>
+      </object>
+      <!-- }}} -->
+    </child>
+
+    <child>
+      <!-- {{{ GtkButton -->
+      <object id="addButton" class="GtkButton">
+        <property name="visible">true</property>
+        <property name="hexpand">false</property>
+        <property name="valign">center</property>
+        <property name="image">add-item</property>
+        <property name="always-show-image">true</property>
+      </object>
+      <!-- }}} -->
+    </child>
+
+  </template>
+</interface>

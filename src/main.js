@@ -8,7 +8,7 @@ imports.gi.versions = {
   Gtk: '3.0'
 }
 
-const { GObject, Gio, GLib, Gtk } = imports.gi
+const { GObject, Gio, GLib, Gtk, Gdk } = imports.gi
 
 const TodoApp = GObject.registerClass({
   Name: 'TodoApp',
@@ -112,8 +112,12 @@ class TodoAppController extends Controller {
     let listController = this.controllers.list = new TodoListController()
     listController.activate()
 
+    let addController = this.controllers.add = new TodoAddItemControler()
+    addController.activate()
+
     this.view = new TodoAppWindow({ application: this.application })
     this.view.setListWidget(listController.view)
+    this.view.setAddItemView(addController.view)
     this.view.show()
   }
 }
@@ -121,6 +125,13 @@ class TodoAppController extends Controller {
 class TodoListController extends Controller {
   activate() {
     this.view = new TodoListWidget()
+    this.view.show()
+  }
+}
+
+class TodoAddItemControler extends Controller {
+  activate () {
+    this.view = new TodoAddItemView()
     this.view.show()
   }
 }
@@ -173,6 +184,11 @@ const TodoAppWindow = GObject.registerClass({
     this._content.add(widget)
     this.listWidget = widget
   }
+
+  setAddItemView (view) {
+    this._content.pack_end(view, false, false, 0)
+    this.addView = view
+  }
 })
 
 const TodoListWidget = GObject.registerClass({
@@ -181,5 +197,14 @@ const TodoListWidget = GObject.registerClass({
   Template: 'resource:///io/alde/examples/TodoApp/todo-list.ui',
   InternalChildren: ['container']
 }, class TodoListWidget extends Gtk.ScrolledWindow {
+
+})
+
+const TodoAddItemView = GObject.registerClass({
+  Name: 'TodoAddItemView',
+  Extends: Gtk.Box,
+  Template: 'resource:///io/alde/examples/TodoApp/todo-add-item.ui',
+  InternalChildren: ['entry', 'addButton']
+}, class TodoAddItemView extends Gtk.Box {
 
 })
