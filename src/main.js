@@ -104,7 +104,7 @@ class Controller {
 class TodoAppController extends Controller {
   constructor (application) {
     super()
-    this.view = new TodoAppWindow({ application })
+    this.application = application
     this.controllers = {}
   }
 
@@ -112,18 +112,15 @@ class TodoAppController extends Controller {
     let listController = this.controllers.list = new TodoListController()
     listController.activate()
 
+    this.view = new TodoAppWindow({ application: this.application })
     this.view.setListWidget(listController.view)
     this.view.show()
   }
 }
 
 class TodoListController extends Controller {
-  constructor () {
-    super()
-    this.view = new TodoListWidget()
-  }
-
   activate() {
+    this.view = new TodoListWidget()
     this.view.show()
   }
 }
