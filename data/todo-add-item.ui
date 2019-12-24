@@ -21,6 +21,7 @@
         <property name="visible">true</property>
         <property name="hexpand">true</property>
         <property name="valign">center</property>
+        <property name="placeholder-text">Task</property>
       </object>
       <!-- }}} -->
     </child>
