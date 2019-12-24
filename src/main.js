@@ -21,10 +21,8 @@ const TodoApp = GObject.registerClass({
   vfunc_activate () {
     log('TodoApp started')
 
-    let item = new TodoItem()
-    item.connect('notify::state', () => { log('state changed') })
-    item.state = TodoItemState.Completed
-    log(item)
+    let appController = new TodoAppController(this)
+    appController.activate()
   }
 })
 
@@ -99,15 +97,47 @@ class PropagationGuard {
   }
 }
 
-class TodoItemController {
+class Controller { 
+
+}
+
+class TodoAppController extends Controller {
+  constructor (application) {
+    super()
+    this.view = new TodoAppWindow({ application })
+    this.controllers = {}
+  }
+
+  activate () {
+    let listController = this.controllers.list = new TodoListController()
+    listController.activate()
+
+    this.view.setListWidget(listController.view)
+    this.view.show()
+  }
+}
+
+class TodoListController extends Controller {
+  constructor () {
+    super()
+    this.view = new TodoListWidget()
+  }
+
+  activate() {
+    this.view.show()
+  }
+}
+
+class TodoItemController extends Controller {
   constructor (view, model) {
+    super()
     this.view = view
     this.model = model
 
     this.guard = new PropagationGuard()
   }
 
-  on_view_checked () {
+  onViewChecked () {
     this.guard.call(() => {
       this.model.state = (this.view.checked) ?
         TodoItemState.Completed :
@@ -115,26 +145,44 @@ class TodoItemController {
     })
   }
 
-  on_model_state_change () {
+  onModelStateChange () {
     this.guard.call(() => {
       this.view.checked = (this.model.state == TodoItemState.Completed)
     })
   }
 
-  connect_view () {
+  connectView () {
     this.view.connect('checked', () => { this.on_view_checked() })
   }
 
-  connect_model () {
+  connectModel () {
     this.model.connect('notify::state', () => { this.on_model_state_change() })
   }
 }
 
 const TodoAppWindow = GObject.registerClass({
   Name: 'TodoAppWindow',
-  Extends: Gtk.ApplicationWindow
+  Extends: Gtk.ApplicationWindow,
+  Template: 'resource:///io/alde/examples/TodoApp/todo-window.ui',
+  InternalChildren: ['content']
 }, class TodoAppWindow extends Gtk.ApplicationWindow {
   _init (params={}) {
     super._init(params)
+
+    this.listWidget = null
   }
+
+  setListWidget (widget) {
+    this._content.add(widget)
+    this.listWidget = widget
+  }
+})
+
+const TodoListWidget = GObject.registerClass({
+  Name: 'TodoListWidget',
+  Extends: Gtk.ScrolledWindow,
+  Template: 'resource:///io/alde/examples/TodoApp/todo-list.ui',
+  InternalChildren: ['container']
+}, class TodoListWidget extends Gtk.ScrolledWindow {
+
 })

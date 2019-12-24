@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <gresources>
   <gresource prefix="/io/alde/examples/TodoApp">
+    <file preprocess="xml-stripblanks">todo-window.ui</file>
+    <file preprocess="xml-stripblanks">todo-list.ui</file>
   </gresource>
 </gresources>

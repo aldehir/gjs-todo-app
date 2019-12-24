@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<interface>
+  <template class="Gjs_TodoListWidget" parent="GtkScrolledWindow">
+
+    <child>
+      <!-- {{{ GtkViewport -->
+      <object class="GtkViewport">
+        <property name="visible">true</property>
+
+        <child>
+          <!-- {{{ GtkBox -->
+          <object id="container" class="GtkBox">
+            <property name="visible">true</property>
+            <property name="orientation">vertical</property>
+            <property name="vexpand">true</property>
+            <property name="halign">fill</property>
+            <property name="margin">12</property>
+            <property name="spacing">6</property>
+
+            <child>
+              <!-- {{{ GtkLabel -->
+              <object class="GtkLabel">
+                <property name="label">Label</property>
+                <property name="visible">true</property>
+              </object>
+              <!-- }}} -->
+            </child>
+          </object>
+          <!-- }}} -->
+        </child>
+      </object>
+      <!-- }}} -->
+    </child>
+
+  </template>
+</interface>
