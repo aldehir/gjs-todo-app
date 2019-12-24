@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<interface>
+  <template class="Gjs_TodoAppWindow" parent="GtkApplicationWindow">
+    <child>
+
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="vexpand">true</property>
+        <property name="halign">fill</property>
+      </object>
+
+    </child>
+  </template>
+</interface>

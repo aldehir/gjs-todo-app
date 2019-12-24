@@ -71,3 +71,70 @@ const TodoItem = GObject.registerClass({
   get description () { return this._description }
   set description (v) { this._description = v; this.notify('description') }
 })
+
+/**
+ * A mechanism to guard against events propagating in a cycle.
+ */
+class PropagationGuard {
+  constructor () {
+    this.locked = false
+  }
+
+  wrap (func) {
+    return (...args) => {
+      if (this.locked) return
+
+      try {
+        return func(...args)
+      } finally {
+        this.locked = false
+      }
+    }
+  }
+
+  call (...args) {
+    let func = args.slice(-1)
+    let newArgs = args.slice(0, -1) || []
+    return this.wrap(func)(...newArgs)
+  }
+}
+
+class TodoItemController {
+  constructor (view, model) {
+    this.view = view
+    this.model = model
+
+    this.guard = new PropagationGuard()
+  }
+
+  on_view_checked () {
+    this.guard.call(() => {
+      this.model.state = (this.view.checked) ?
+        TodoItemState.Completed :
+        TodoItemState.Pending
+    })
+  }
+
+  on_model_state_change () {
+    this.guard.call(() => {
+      this.view.checked = (this.model.state == TodoItemState.Completed)
+    })
+  }
+
+  connect_view () {
+    this.view.connect('checked', () => { this.on_view_checked() })
+  }
+
+  connect_model () {
+    this.model.connect('notify::state', () => { this.on_model_state_change() })
+  }
+}
+
+const TodoAppWindow = GObject.registerClass({
+  Name: 'TodoAppWindow',
+  Extends: Gtk.ApplicationWindow
+}, class TodoAppWindow extends Gtk.ApplicationWindow {
+  _init (params={}) {
+    super._init(params)
+  }
+})
