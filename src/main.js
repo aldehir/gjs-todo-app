@@ -131,8 +131,17 @@ class TodoListController extends Controller {
 
 class TodoAddItemControler extends Controller {
   activate () {
-    this.view = new TodoAddItemView()
-    this.view.show()
+    let view = this.view = new TodoAddItemView()
+    this.connectView(view)
+    view.show()
+  }
+
+  connectView (view) {
+    view.connect('add-task', this.addTask.bind(this))
+  }
+
+  addTask () {
+    log(`Adding task: ${this.view.task}`)
   }
 }
 
@@ -204,7 +213,32 @@ const TodoAddItemView = GObject.registerClass({
   Name: 'TodoAddItemView',
   Extends: Gtk.Box,
   Template: 'resource:///io/alde/examples/TodoApp/todo-add-item.ui',
-  InternalChildren: ['entry', 'addButton']
+  InternalChildren: ['entry', 'addButton'],
+  Properties: {
+    'task': GObject.ParamSpec.string(
+      'task', 'Task', 'Task description',
+      GObject.ParamFlags.READWRITE,
+      ''
+    )
+  },
+  Signals: {
+    'add-task': {
+      flags: GObject.SignalFlags.RUN_FIRST,
+      param_types: []
+    }
+  }
 }, class TodoAddItemView extends Gtk.Box {
+  _init(params={}) {
+    super._init(params)
 
+    this._task = ''
+
+    this._entry.bind_property('text', this, 'task',
+      GObject.BindingFlags.DEFAULT | GObject.BindingFlags.SYNC_CREATE)
+
+    this._addButton.connect('clicked', () => { this.emit('add-task') })
+  }
+
+  get task () { return this._task }
+  set task (v) { this._task = v; this.notify('task') }
 })
