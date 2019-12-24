@@ -13,9 +13,11 @@ PKGDATADIR ?= $(DATADIR)/$(PACKAGE_NAME)
 
 export
 
-.PHONY: all entrypoint src-resources data-resources clean
+.PHONY: all entrypoint src-resources data-resources run clean
 
-all: entrypoint src-resources data-resources
+all: build
+
+build: entrypoint src-resources data-resources
 
 ENTRY_POINT = src/$(ENTRY_POINT_NAME)
 entrypoint: $(ENTRY_POINT)
@@ -37,3 +39,6 @@ clean:
 	rm -f $(ENTRY_POINT)
 	rm -f $(SRC_RESOURCE)
 	rm -f $(DATA_RESOURCE)
+
+run: build
+	$(ENTRY_POINT)
